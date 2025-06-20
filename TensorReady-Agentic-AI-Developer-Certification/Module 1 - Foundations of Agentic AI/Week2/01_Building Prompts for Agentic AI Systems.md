@@ -61,3 +61,16 @@ Let’s walk through a real example using the publication:
 
 ---
 
+# 🧪 Prompt Walkthrough: Step-by-Step Improvements
+
+Let’s walk through how a simple prompt evolves into a precise, purpose-driven instruction set by adding modular components one at a time.
+
+---
+
+## 🔹 Example 1: The Baseline (Instruction + Input Only)
+
+Let’s begin with the most basic approach — just an **instruction** and the **content**.
+
+### 🧾 Prompt
+
+
