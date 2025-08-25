@@ -1,0 +1,68 @@
+{
+  "name": "gmail mcp server",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "4498f697-b73d-4bd4-a74c-010b23be67e6"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        -96,
+        -64
+      ],
+      "id": "a75455fa-f0c0-488d-942d-468edc4063c7",
+      "name": "MCP Server Trigger",
+      "webhookId": "4498f697-b73d-4bd4-a74c-010b23be67e6"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        144
+      ],
+      "id": "8242c423-cb56-4a0a-a719-c8c3c9e638bd",
+      "name": "Send a message in Gmail",
+      "webhookId": "43595c92-6580-4185-bcac-cb6e0d6e9846",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "RomZlB3zry68Ys5x",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Send a message in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "dc3b7630-311e-4f88-abca-bb5be5bbfc42",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b0be3cea3ee0ab5543146d6fed4829f074f8cdefd65b8a06f398f37963da8129"
+  },
+  "id": "0xteTt5cuNVApOfe",
+  "tags": []
+}
