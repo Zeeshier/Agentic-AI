@@ -1,0 +1,139 @@
+{
+  "name": "Gmail Agent with MCP",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an email assistant.  \nThe user will write a natural command.  \n\nUser Input: {{ $json.chatInput }}\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        80,
+        -80
+      ],
+      "id": "c1c1b00d-3d44-43f3-9373-0a27614fd179",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        128
+      ],
+      "id": "b0e06aef-187a-42f1-ba00-0584c063b74d",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "z7GiPKwrYhEN0kwB",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        96,
+        128
+      ],
+      "id": "67102214-f13e-44b4-b3d4-34a7d62eb228",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://localhost:5678/mcp/4498f697-b73d-4bd4-a74c-010b23be67e6",
+        "include": "selected",
+        "includeTools": [
+          "Send_a_message_in_Gmail"
+        ]
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        336,
+        96
+      ],
+      "id": "49718c51-2f68-4a82-88af-649a2d05ca2a",
+      "name": "MCP Client"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -80,
+        -80
+      ],
+      "id": "09f059b2-527c-4b14-8743-537e09138860",
+      "name": "When chat message received",
+      "webhookId": "c9de5d76-ad6b-471f-9fbc-5338dd49bdd8"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "43f41faf-ad50-474d-ad3e-19341974a111",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b0be3cea3ee0ab5543146d6fed4829f074f8cdefd65b8a06f398f37963da8129"
+  },
+  "id": "krs85XJUfNWAQtxN",
+  "tags": []
+}
