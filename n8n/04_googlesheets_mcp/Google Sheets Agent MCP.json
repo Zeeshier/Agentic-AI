@@ -1,0 +1,237 @@
+{
+  "name": "Google Sheets Agent MCP",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -160,
+        -48
+      ],
+      "id": "ccc0e32d-4667-4c4f-8026-6e2d800a72e1",
+      "name": "When chat message received",
+      "webhookId": "6f871bea-02dd-4043-ba46-b5a9a1589757"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        160
+      ],
+      "id": "c3723902-34cf-44d5-a4e9-23588428e1c6",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "z7GiPKwrYhEN0kwB",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        96,
+        160
+      ],
+      "id": "7590d706-5d6d-4f3f-b9a0-14843426f3b0",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        416,
+        160
+      ],
+      "id": "94626a8a-1632-4dbf-8b23-6f219b720024",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "z7GiPKwrYhEN0kwB",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://localhost:5678/mcp/ca0e0318-6feb-4f27-b228-3a9448fa15c5"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        160
+      ],
+      "id": "e428b7dc-5756-456f-b440-f6c19815a303",
+      "name": "Sheets"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://localhost:5678/mcp/4498f697-b73d-4bd4-a74c-010b23be67e6"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        656,
+        160
+      ],
+      "id": "954a70e7-01db-4513-9f30-246826ed8738",
+      "name": "Gmail"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        544,
+        160
+      ],
+      "id": "0d56032d-1793-488c-8e1e-04d49bfbe35e",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an data retreiver assistant.  \nyour task is to get data from google sheets tool which i add in mcp server\nand pass the input from tool and user message to next agent\nUser Input: {{ $json.chatInput }}\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        64,
+        -48
+      ],
+      "id": "6f0bead7-6644-4bdc-a113-bc94651f5bd1",
+      "name": "Data Retreiver Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "= you are email agent you task is to write email according to user message and write it in provessional way\nThe user will write a natural command.   {{ $json.output }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        -48
+      ],
+      "id": "a5d26728-d98c-4d11-a6af-d36cceb036d9",
+      "name": "Email Sender Agent"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Data Retreiver Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Data Retreiver Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Data Retreiver Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Email Sender Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email Sender Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "Data Retreiver Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Email Sender Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Retreiver Agent": {
+      "main": [
+        [
+          {
+            "node": "Email Sender Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9fe972df-0068-4ea2-8781-4792b5296f72",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b0be3cea3ee0ab5543146d6fed4829f074f8cdefd65b8a06f398f37963da8129"
+  },
+  "id": "1QbeBa13WZVQT5jz",
+  "tags": []
+}
