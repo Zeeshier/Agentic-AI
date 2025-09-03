@@ -1,0 +1,201 @@
+{
+  "name": "Voice Based Appointment Booking Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "08b8296b-c917-43b6-a183-8c3ae4df02de",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -432,
+        0
+      ],
+      "id": "782683af-0e2c-4e25-ac6a-c7b9c9b56bf3",
+      "name": "Webhook",
+      "webhookId": "08b8296b-c917-43b6-a183-8c3ae4df02de"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6812c6ef-4c2d-4a9d-9eea-0acb6237fc55",
+              "leftValue": "={{$json.body.tool}}",
+              "rightValue": "checkAvailableSlot",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -224,
+        0
+      ],
+      "id": "2bda4785-1afc-44e5-936b-6b9d879621f4",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "url": "https://api.cal.com/v1/slots",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "calApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "startTime",
+              "value": "={{ $json.body.startTime }}"
+            },
+            {
+              "name": "endTime",
+              "value": "={{DateTime.fromISO($json.body.startTime, { zone: 'Asia/Karachi' })   .set({ hour: 18, minute: 0, second: 0 }) .format(\"yyyy-MM-dd'T'HH:mm:ssZZ\")}}"
+            },
+            {
+              "name": "eventTypeId",
+              "value": "eventTypeId"
+            },
+            {
+              "name": "timeZone",
+              "value": "Asia/Karachi"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -16,
+        -64
+      ],
+      "id": "c858d21f-7d91-4d4d-80be-cbb71caeb888",
+      "name": "HTTP Request",
+      "credentials": {
+        "calApi": {
+          "id": "rnmQGTfToJfKrgXm",
+          "name": "Cal account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.cal.com/v1/bookings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "calApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"eventTypeId\": event_type_id,\n  \"start\": \"{{ $json.body.startTime }}\",\n  \"end\": \"{{ DateTime.fromISO($json.body.startTime).plus({ minutes: 30 }).format(\"yyyy-MM-dd'T'HH:mm:ssZZ\") }}\",\n  \"responses\": {\n    \"name\": \"{{ $json.body.name }}\",\n    \"email\": \"{{ $json.body.email }}\"\n  },\n  \"timeZone\": \"Asia/Karachi\",\n  \"language\": \"en\",\n  \"title\": \"Test\",\n\"metadata\":{}\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -16,
+        96
+      ],
+      "id": "237d9bda-b35d-4421-9414-18f46461f204",
+      "name": "HTTP Request1",
+      "credentials": {
+        "calApi": {
+          "id": "rnmQGTfToJfKrgXm",
+          "name": "Cal account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        224,
+        16
+      ],
+      "id": "54b230d9-5de2-4755-b2d7-39534d832acd",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8941d011-5fd8-4096-ac68-3c0cafe81718",
+  "meta": {
+    "instanceId": "b0be3cea3ee0ab5543146d6fed4829f074f8cdefd65b8a06f398f37963da8129"
+  },
+  "id": "oawvlSIInwKQMYoJ",
+  "tags": []
+}
